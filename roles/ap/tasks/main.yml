@@ -4,6 +4,20 @@
 #    src: dhcpcd.conf.j2
 #    dest: /etc/dhcpcd.conf
 
+- name: install required packages
+  apt:
+    update_cache: yes
+    state: latest
+    pkg:
+      - hostapd
+      - dnsmasq
+      - netfilter-persistent
+      - iptables-persistent
+      - radvd
+      - freeradius
+  tags:
+    - apt
+
 - name: disable dhcpcd
   systemd:
     name: dhcpcd
@@ -54,6 +68,31 @@
     - restart radvd
   tags:
     - radvd
+
+- name: configure freeradius
+  template:
+    src: radius/default.j2
+    dest: /etc/freeradius/3.0/sites-available/default
+  notify: restart freeradius
+  tags:
+    - radius
+
+- name: configure freeradius inner-tunnel
+  template:
+    src: radius/inner-tunnel.j2
+    dest: /etc/freeradius/3.0/sites-available/inner-tunnel
+  notify: restart freeradius
+  tags:
+    - radius
+
+- name: configure freeradius users
+  template:
+    src: radius/users.j2
+    dest: /etc/freeradius/3.0/mods-config/files/authorize
+  notify: restart freeradius
+  tags:
+    - radius
+
 - name: enable NAT for IPv4
   iptables:
     ip_version: ipv4

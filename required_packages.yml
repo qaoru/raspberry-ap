@@ -21,6 +21,7 @@
           - netfilter-persistent
           - iptables-persistent
           - radvd
+          - freeradius
 
     # Set ip forwarding on in /proc and in the sysctl file and reload if necessary
     - name: enable ip forwarding

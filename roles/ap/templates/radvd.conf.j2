@@ -1,6 +1,6 @@
 {{ ansible_managed | comment }}
 
-interface eth3 {
+interface {{ wifi_eap_iface }} {
 
 	AdvSendAdvert on;
 	prefix fd00:b00b::/64 {

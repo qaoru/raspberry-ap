@@ -18,5 +18,10 @@
     name: dnsmasq
     state: restarted
 
+- name: restart freeradius
+  systemd:
+    name: freeradius
+    state: restarted
+
 - name: save iptables
   command: netfilter-persistent save

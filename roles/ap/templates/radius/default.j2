@@ -1,0 +1,36 @@
+server iot {
+    listen {
+        type = auth
+        ipaddr = 127.0.0.1
+        port = 1812
+        limit {
+            max_connections = 16
+            lifetime = 0
+            idle_timeout = 30
+        }
+    }
+    listen {
+        type = auth
+        ipv6addr = ::1
+        port = 0
+        limit {
+            max_connections = 16
+            lifetime = 0
+            idle_timeout = 30
+        }
+    }
+    authorize {
+        files
+        pap
+	    eap
+    }
+    authenticate {
+        Auth-Type PAP {
+            pap
+        }
+	    eap
+    }
+    session {
+        radutmp
+    }
+}

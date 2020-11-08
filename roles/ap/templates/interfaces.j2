@@ -27,6 +27,9 @@ iface {{ wifi_eap_iface }} inet static
     pre-up ip link set dev {{ wifi_eap_iface }} address {{ wlan_mac_override }}
     {% endif %}
 
+iface {{ wifi_eap_iface }} inet6 static
+    address   fd00:b00b::cafe/64
+
 auto {{ wifi_cwp_iface }}
 allow-hotplug {{ wifi_cwp_iface }}
 iface {{ wifi_cwp_iface }} inet static
