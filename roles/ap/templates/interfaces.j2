@@ -28,7 +28,7 @@ iface {{ wifi_eap_iface }} inet static
     {% endif %}
 
 iface {{ wifi_eap_iface }} inet6 static
-    address   fd00:b00b::cafe/64
+    address   {{ wifi_eap_ra.router }}
 
 auto {{ wifi_cwp_iface }}
 allow-hotplug {{ wifi_cwp_iface }}

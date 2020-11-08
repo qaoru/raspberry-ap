@@ -3,8 +3,11 @@
 interface {{ wifi_eap_iface }} {
 
 	AdvSendAdvert on;
-	prefix fd00:b00b::/64 {
+	prefix {{ wifi_eap_ra.router | ansible.netcommon.ipv6('network/prefix') }} {
 		AdvRouterAddr on;
 	};
+	{% for ns in wifi_eap_ra.dns %}
+	RDNSS {{ ns }} { };
+	{% endfor %}
 
 };

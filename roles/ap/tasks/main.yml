@@ -29,6 +29,24 @@
     name: hostapd
     masked: no
     enabled: yes
+  tags:
+    - apt  
+
+- name: enable radvd
+  systemd:
+    name: radvd
+    state: started
+    enabled: yes
+  tags:
+    - apt
+
+- name: enable freeradius
+  systemd:
+    name: freeradius
+    state: started
+    enabled: yes
+  tags:
+    - apt
 
 - name: configure hostapd
   template:
@@ -89,6 +107,14 @@
   template:
     src: radius/users.j2
     dest: /etc/freeradius/3.0/mods-config/files/authorize
+  notify: restart freeradius
+  tags:
+    - radius
+
+- name: configure freeradius eap
+  template:
+    src: radius/eap.j2
+    dest: /etc/freeradius/3.0/mods-available/eap
   notify: restart freeradius
   tags:
     - radius
