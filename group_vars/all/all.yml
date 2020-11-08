@@ -1,0 +1,34 @@
+lan_iface: eth0
+lan_ipaddr: 192.168.1.245/24
+lan_gateway: 192.168.1.1
+gateway_as_dns: true
+nameservers: [1.1.1.1, 8.8.8.8]
+
+# Required for muliple SSIDs
+wlan_mac_override: 06:25:9c:94:4b:20
+
+wifi_eap_iface: wlan1
+wifi_eap_ipaddr: 10.20.30.254/24
+wifi_eap_ssid: IoTEAPNetwork
+wifi_eap_dhcp:
+  start: 10.20.30.100
+  end: 10.20.30.150
+  lease_time: 12h
+
+wifi_cwp_iface: wlan1_1
+wifi_cwp_ipaddr: 192.168.3.254/24
+wifi_cwp_ssid: IoTGuestNetwork
+wifi_cwp_dhcp:
+  start: 192.168.3.100
+  end: 192.168.3.150
+  lease_time: 12h
+
+radius_password: testing123
+
+radius_users:
+  - name: bob
+    password: hello
+  - name: foo
+    password: bar
+
+

@@ -1,0 +1,5 @@
+- hosts: raspi
+  remote_user: pi
+  become: yes
+  roles:
+  - ap

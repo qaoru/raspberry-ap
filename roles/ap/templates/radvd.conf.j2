@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+
+interface eth3 {
+
+	AdvSendAdvert on;
+	prefix fd00:b00b::/64 {
+		AdvRouterAddr on;
+	};
+
+};

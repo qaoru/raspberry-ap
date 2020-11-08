@@ -1,0 +1,32 @@
+{{ ansible_managed | comment }}
+
+interface={{ wifi_eap_iface }}
+driver=nl80211
+ctrl_interface=/var/run/hostapd
+ctrl_interface_group=0
+hw_mode=g
+channel=ac_survey            # the channel to use
+ieee80211d=1          # limit the frequencies used to those allowed in the country
+country_code=FR       # the country code
+ieee80211n=1          # 802.11n support
+ieee80211ac=1         # 802.11ac support
+wmm_enabled=1         # QoS support
+
+
+ssid={{ wifi_eap_ssid }}
+wpa=2
+wpa_passphrase=mygreatpassword
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=CCMP
+rsn_pairwise=CCMP
+beacon_int=100
+auth_algs=1
+
+bss={{ wifi_cwp_iface }}
+ssid={{ wifi_cwp_ssid }}
+wpa=2
+wpa_key_mgmt=WPA-PSK
+rsn_pairwise=CCMP
+wpa_passphrase=you_cant_guess
+beacon_int=100
+auth_algs=1

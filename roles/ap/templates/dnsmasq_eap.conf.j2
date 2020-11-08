@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+
+interface={{ wifi_eap_iface }}
+dhcp-range=set:{{ wifi_eap_iface }},{{ wifi_eap_dhcp.start }},{{ wifi_eap_dhcp.end }},{{ wifi_eap_ipaddr | ansible.netcommon.ipaddr('netmask') }},{{ wifi_eap_dhcp.lease_time }}
+
+# gateway addr
+dhcp-option={{ wifi_eap_iface }},3,{{ wifi_eap_ipaddr | ansible.netcommon.ipaddr('address')  }}
+
+# DNS
+dhcp-option={{ wifi_eap_iface }},6,{{ nameservers | join(',') }}

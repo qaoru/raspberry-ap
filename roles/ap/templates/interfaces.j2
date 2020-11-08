@@ -1,0 +1,36 @@
+{{ ansible_managed | comment }}
+
+auto lo
+iface lo inet loopback
+
+auto {{ lan_iface }}
+allow-hotplug {{ lan_iface }}
+iface {{ lan_iface }} inet static
+    address   {{ lan_ipaddr | ansible.netcommon.ipaddr('address') }}
+    network   {{ lan_ipaddr | ansible.netcommon.ipaddr('network') }}
+    netmask   {{ lan_ipaddr | ansible.netcommon.ipaddr('netmask') }}
+    broadcast {{ lan_ipaddr | ansible.netcommon.ipaddr('broadcast') }}
+    gateway {{ lan_gateway }}
+    dns-nameservers {% if gateway_as_dns %}{{ lan_gateway }}{% endif %}{% for item in nameservers %} {{ item }}{% endfor %}
+
+
+iface {{ lan_iface }} inet6 auto
+
+auto {{ wifi_eap_iface }}
+allow-hotplug {{ wifi_eap_iface }}
+iface {{ wifi_eap_iface }} inet static
+    address   {{ wifi_eap_ipaddr | ansible.netcommon.ipaddr('address') }}
+    network   {{ wifi_eap_ipaddr | ansible.netcommon.ipaddr('network') }}
+    netmask   {{ wifi_eap_ipaddr | ansible.netcommon.ipaddr('netmask') }}
+    broadcast {{ wifi_eap_ipaddr | ansible.netcommon.ipaddr('broadcast') }}
+    {% if wlan_mac_override %}
+    pre-up ip link set dev {{ wifi_eap_iface }} address {{ wlan_mac_override }}
+    {% endif %}
+
+auto {{ wifi_cwp_iface }}
+allow-hotplug {{ wifi_cwp_iface }}
+iface {{ wifi_cwp_iface }} inet static
+    address   {{ wifi_cwp_ipaddr | ansible.netcommon.ipaddr('address') }}
+    network   {{ wifi_cwp_ipaddr | ansible.netcommon.ipaddr('network') }}
+    netmask   {{ wifi_cwp_ipaddr | ansible.netcommon.ipaddr('netmask') }}
+    broadcast {{ wifi_cwp_ipaddr | ansible.netcommon.ipaddr('broadcast') }}

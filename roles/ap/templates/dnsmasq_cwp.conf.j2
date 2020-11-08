@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+
+interface={{ wifi_cwp_iface }}
+dhcp-range=set:{{ wifi_cwp_iface }},{{ wifi_cwp_dhcp.start }},{{ wifi_cwp_dhcp.end }},{{ wifi_cwp_ipaddr | ansible.netcommon.ipaddr('netmask') }},{{ wifi_cwp_dhcp.lease_time }}
+
+# gateway addr
+dhcp-option={{ wifi_cwp_iface }},3,{{ wifi_cwp_ipaddr | ansible.netcommon.ipaddr('address')  }}
+
+# DNS
+dhcp-option={{ wifi_cwp_iface }},6,{{ nameservers | join(',') }}

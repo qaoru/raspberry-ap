@@ -1,0 +1,81 @@
+---
+#- name: configure interfaces with dhcpcd
+#  template:
+#    src: dhcpcd.conf.j2
+#    dest: /etc/dhcpcd.conf
+
+- name: disable dhcpcd
+  systemd:
+    name: dhcpcd
+    state: stopped
+    enabled: no
+
+- name: ensure hostapd in not masked
+  systemd:
+    name: hostapd
+    masked: no
+    enabled: yes
+
+- name: configure hostapd
+  template:
+    src: hostapd.conf.j2
+    dest: /etc/hostapd/hostapd.conf
+  notify: restart hostapd
+  tags:
+    - ap
+
+- name: configure interfaces
+  template:
+    src: interfaces.j2
+    dest: /etc/network/interfaces
+  notify: restart network
+  tags:
+    - network
+
+- name: configure dnsmasq for EAP network
+  template:
+    src: dnsmasq_eap.conf.j2
+    dest: /etc/dnsmasq.d/eap.conf
+  tags:
+    - dhcp
+
+- name: configure dnsmasq for CWP portal
+  template:
+    src: dnsmasq_cwp.conf.j2
+    dest: /etc/dnsmasq.d/cwp.conf
+  tags:
+    - dhcp
+
+- name: configure radvd
+  template:
+    src: radvd.conf.j2
+    dest: /etc/radvd.conf
+  notify:
+    - restart radvd
+  tags:
+    - radvd
+- name: enable NAT for IPv4
+  iptables:
+    ip_version: ipv4
+    table: nat
+    chain: POSTROUTING
+    out_interface: eth0
+    jump: MASQUERADE
+  notify:
+    - save iptables
+    #  - restart hostapd
+  tags:
+    - nat
+
+- name: enable NAT for IPv6
+  iptables:
+    ip_version: ipv6
+    table: nat
+    chain: POSTROUTING
+    out_interface: eth0
+    jump: MASQUERADE
+  notify:
+    - save iptables
+    #- restart hostapd
+  tags:
+    - nat
