@@ -1,9 +1,4 @@
 ---
-#- name: configure interfaces with dhcpcd
-#  template:
-#    src: dhcpcd.conf.j2
-#    dest: /etc/dhcpcd.conf
-
 - name: install required packages
   apt:
     update_cache: yes
@@ -23,6 +18,25 @@
     name: dhcpcd
     state: stopped
     enabled: no
+  tags:
+    - network
+
+- name: enable networkd
+  systemd:
+    name: systemd-networkd
+    state: started
+    enabled: yes
+  tags:
+    - network
+
+- name: disable resolved
+  systemd:
+    name: systemd-resolved
+    state: stopped
+    enabled: no
+  tags:
+    - network
+    - dnsmasq
 
 - name: ensure hostapd in not masked
   systemd:
@@ -58,25 +72,33 @@
 
 - name: configure interfaces
   template:
-    src: interfaces.j2
-    dest: /etc/network/interfaces
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
   notify: restart network
+  with_items:
+    - { src: 'templates/networkd/lan.network.j2', dest: '/etc/systemd/network/lan.network' }
+    - { src: 'templates/networkd/eap.network.j2', dest: '/etc/systemd/network/eap.network' }
+    - { src: 'templates/networkd/cwp.network.j2', dest: '/etc/systemd/network/cwp.network' }
   tags:
     - network
 
-- name: configure dnsmasq for EAP network
+- name: configure resolv.conf to use dnsmasq
   template:
-    src: dnsmasq_eap.conf.j2
-    dest: /etc/dnsmasq.d/eap.conf
+    src: resolvconf.conf.j2
+    dest: /etc/resolvconf.conf
+  notify: generate resolv
   tags:
-    - dhcp
-
-- name: configure dnsmasq for CWP portal
+    - dnsmasq
+  
+- name: configure dnsmasq
   template:
-    src: dnsmasq_cwp.conf.j2
-    dest: /etc/dnsmasq.d/cwp.conf
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+  with_items:
+    - { src: 'templates/dnsmasq_eap.conf.j2', dest: '/etc/dnsmasq.d/eap.conf' }
+    - { src: 'templates/dnsmasq_cwp.conf.j2', dest: '/etc/dnsmasq.d/cwp.conf' }
   tags:
-    - dhcp
+    - dnsmasq
 
 - name: configure radvd
   template:

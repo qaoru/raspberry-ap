@@ -5,7 +5,7 @@
 
 - name: restart network
   service:
-    name: networking
+    name: systemd-networkd
     state: restarted
 
 - name: restart hostapd
@@ -17,6 +17,9 @@
   systemd:
     name: dnsmasq
     state: restarted
+
+- name: generate resolv
+  command: resolvconf -u
 
 - name: restart freeradius
   systemd:

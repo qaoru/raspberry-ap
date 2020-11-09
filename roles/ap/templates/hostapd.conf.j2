@@ -13,13 +13,14 @@ wmm_enabled=1         # QoS support
 
 # -------- main --------
 ssid={{ wifi_eap_ssid }}
-ieee8021x=1
+#ieee8021x=1
 wpa=2
-wpa_key_mgmt=WPA-EAP
+wpa_key_mgmt=WPA-PSK
 wpa_pairwise=CCMP
 rsn_pairwise=CCMP
 beacon_int=100
-auth_algs=3
+auth_algs=1
+wpa_passphrase=mygreatpassword
 
 auth_server_addr=127.0.0.1
 auth_server_port=1812
