@@ -29,6 +29,10 @@ wifi_cwp_dhcp:
   end: 192.168.3.150
   lease_time: 12h
 
+uam_network: 10.10.10.0/24
+uam_listener: 10.10.10.254/24
+uam_secret: c5e9be43f916a5f0
+
 radius_password: testing123
 
 radius_users:

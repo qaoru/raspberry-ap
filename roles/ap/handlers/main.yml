@@ -28,3 +28,11 @@
 
 - name: save iptables
   command: netfilter-persistent save
+
+- name: restart nginx
+  systemd:
+    name: nginx
+    state: restarted
+
+- name: restart chilli
+  command: /etc/init.d/chilli restart

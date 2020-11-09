@@ -138,6 +138,45 @@
   tags:
     - radius
 
+- name: remove nginx default website
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+  tags:
+    - hotspot
+
+- name: configure nginx for captive portal
+  template:
+    src: hotspot/nginx.conf.j2
+    dest: /etc/nginx/conf.d/hotspot.conf
+  notify: restart nginx
+  tags:
+    - hotspot
+
+- name: configure web page
+  template:
+    src: hotspot/hotspotlogin.php.j2
+    dest: /var/www/hotspot/hostspotlogin.php
+  tags:
+    - hotspot
+
+- name: ensure chilli is started
+  lineinfile:
+    path: /etc/default/chilli
+    regexp: '^START_CHILLI='
+    line: START_CHILLI=1
+  tags:
+    - hotspot
+
+- name: configure chilli
+  template:
+    src: hotspot/chilli.j2
+    dest: /etc/chilli/config
+  notify: restart chilli
+  tags:
+    - hotspot
+
 - name: enable NAT for IPv4
   iptables:
     ip_version: ipv4
