@@ -1,0 +1,70 @@
+---
+- hosts: raspi
+  remote_user: pi
+  become: true
+  tasks:
+    - name: install build dependencies
+      apt:
+        update_cache: yes
+        pkg:
+          - nginx
+          - php-fpm
+          - daemon
+          - xz-utils"
+          - hostapd
+          - dnsmasq
+          - netfilter-persistent
+          - iptables-persistent
+          - radvd
+          - freeradius
+
+    - name: disable dhcpcd
+      systemd:
+        name: dhcpcd
+        state: stopped
+        enabled: no
+
+    - name: enable networkd
+      systemd:
+        name: systemd-networkd
+        enabled: yes
+
+    - name: disable resolved
+      systemd:
+        name: systemd-resolved
+        state: stopped
+        enabled: no
+
+    - name: ensure hostapd in not masked
+      systemd:
+        name: hostapd
+        masked: no
+        enabled: yes 
+
+    - name: enable radvd
+      systemd:
+        name: radvd
+        enabled: yes
+
+    - name: enable freeradius
+      systemd:
+        name: freeradius
+        enabled: yes
+
+    - name: install coova-chilli 
+      apt:
+        deb: https://github.com/rahveiz/coova-chilli/releases/download/1.5_armv7l/coova-chilli_1.4_armhf.deb
+
+    - name: enable coova-chilli
+      systemd:
+        name: chilli
+        enabled: yes
+
+    - name: fetch hotspot-login pages
+      unarchive:
+        src: https://github.com/rahveiz/hotspot-login/archive/master.zip
+        dest: /var/www
+        remote_src: yes
+
+    - name: rename folder
+      command: mv /var/www/hotspot-login-master /var/www/hostpot
