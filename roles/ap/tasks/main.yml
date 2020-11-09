@@ -92,11 +92,8 @@
   
 - name: configure dnsmasq
   template:
-    src: '{{ item.src }}'
-    dest: '{{ item.dest }}'
-  with_items:
-    - { src: 'templates/dnsmasq_eap.conf.j2', dest: '/etc/dnsmasq.d/eap.conf' }
-    - { src: 'templates/dnsmasq_cwp.conf.j2', dest: '/etc/dnsmasq.d/cwp.conf' }
+    src: dnsmasq.conf.j2
+    dest: /etc/dnsmasq.d/wlan.conf
   tags:
     - dnsmasq
 
