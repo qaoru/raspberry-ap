@@ -15,7 +15,9 @@
   with_items:
     - { src: 'templates/networkd/lan.network.j2', dest: '/etc/systemd/network/lan.network' }
     - { src: 'templates/networkd/eap.network.j2', dest: '/etc/systemd/network/eap.network' }
-    - { src: 'templates/networkd/cwp.network.j2', dest: '/etc/systemd/network/cwp.network' }
+    - { src: 'templates/networkd/cwp_bridge.network.j2', dest: '/etc/systemd/network/cwp_bridge.network' }
+    - { src: 'templates/networkd/cwp_bridge.netdev.j2', dest: '/etc/systemd/network/cwp_bridge.netdev' }
+    - { src: 'templates/networkd/cwp_bind.network.j2', dest: '/etc/systemd/network/cwp_bind.network' }
   tags:
     - network
 
@@ -133,7 +135,6 @@
     jump: MASQUERADE
   notify:
     - save iptables
-    #  - restart hostapd
   tags:
     - nat
 
@@ -146,6 +147,5 @@
     jump: MASQUERADE
   notify:
     - save iptables
-    #- restart hostapd
   tags:
     - nat

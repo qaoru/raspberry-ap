@@ -3,45 +3,36 @@
   remote_user: pi
   become: true
   tasks:
-    - name: install build dependencies
+    - name: update apt repositories
       apt:
         update_cache: yes
-        pkg:
+  
+    - name: install required packages
+      apt:
+        name: '{{ item }}'
+        state: present
+        with_items:
+          - xz-utils
+          - dnsmasq
+          - radvd
+          - hostapd
+          - freeradius
           - nginx
           - php-fpm
           - daemon
-          - xz-utils
-          - hostapd
-          - dnsmasq
           - netfilter-persistent
           - iptables-persistent
-          - radvd
-          - freeradius
-
-    - name: disable dhcpcd
-      systemd:
-        name: dhcpcd
-        state: stopped
-        enabled: no
-
-    - name: enable networkd
-      systemd:
-        name: systemd-networkd
-        enabled: yes
-
-    - name: disable resolved
-      systemd:
-        name: systemd-resolved
-        state: stopped
-        enabled: no
 
     - name: ensure hostapd in not masked
       systemd:
         name: hostapd
         masked: no
         enabled: yes 
-      tags:
-        - hostapd
+    
+    - name: enable dnsmasq
+      systemd:
+        name: dnsmasq
+        enabled: yes
 
     - name: enable radvd
       systemd:
@@ -68,5 +59,22 @@
         dest: /var/www
         remote_src: yes
 
-    - name: rename folder
+    - name: rename hotspot-login to hotspot
       command: mv /var/www/hotspot-login-master /var/www/hotspot
+
+    - name: disable dhcpcd
+      systemd:
+        name: dhcpcd
+        state: stopped
+        enabled: no
+
+    - name: enable networkd
+      systemd:
+        name: systemd-networkd
+        enabled: yes
+
+    - name: disable resolved
+      systemd:
+        name: systemd-resolved
+        state: stopped
+        enabled: no

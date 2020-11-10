@@ -1,5 +1,5 @@
 lan_iface: eth0
-lan_ipaddr: 192.168.1.245/24
+lan_ipaddr: 192.168.1.246/24
 lan_gateway: 192.168.1.1
 gateway_as_dns: true
 nameservers: [1.1.1.1, 8.8.8.8]

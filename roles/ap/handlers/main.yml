@@ -3,11 +3,6 @@
     name: radvd
     state: restarted
 
-- name: restart network
-  service:
-    name: systemd-networkd
-    state: restarted
-
 - name: restart hostapd
   systemd:
     name: hostapd
@@ -26,9 +21,6 @@
     name: freeradius
     state: restarted
 
-- name: save iptables
-  command: netfilter-persistent save
-
 - name: restart nginx
   systemd:
     name: nginx
@@ -36,3 +28,11 @@
 
 - name: restart chilli
   command: /etc/init.d/chilli restart
+
+- name: restart network
+  service:
+    name: systemd-networkd
+    state: restarted
+
+- name: save iptables
+  command: netfilter-persistent save
