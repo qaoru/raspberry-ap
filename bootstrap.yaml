@@ -9,9 +9,7 @@
   
     - name: install required packages
       apt:
-        name: '{{ item }}'
-        state: present
-        with_items:
+        name:
           - xz-utils
           - dnsmasq
           - radvd
@@ -22,6 +20,7 @@
           - daemon
           - netfilter-persistent
           - iptables-persistent
+        state: present
 
     - name: ensure hostapd in not masked
       systemd:

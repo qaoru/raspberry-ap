@@ -26,16 +26,3 @@ dhcp-option={{ wifi_eap_iface }},6,{{ gw }},{{ nameservers | join(',') }}
 
 # DNS for IPv6
 dhcp-option={{ wifi_eap_iface }},option6:dns-server{% for ns in wifi_eap_ra.dns %},[{{ ns }}]{% endfor %}
-
-
-# CWP
-
-interface={{ wifi_cwp_iface }}
-dhcp-range=set:{{ wifi_cwp_iface }},{{ wifi_cwp_dhcp.start }},{{ wifi_cwp_dhcp.end }},{{ wifi_cwp_ipaddr | ansible.netcommon.ipaddr('netmask') }},{{ wifi_cwp_dhcp.lease_time }}
-
-{% set gw = wifi_eap_ipaddr | ansible.netcommon.ipaddr('address') %}
-# gateway addr
-dhcp-option={{ wifi_cwp_iface }},3,{{ gw }}
-
-# DNS
-dhcp-option={{ wifi_cwp_iface }},6,{{ gw }},{{ nameservers | join(',') }}
