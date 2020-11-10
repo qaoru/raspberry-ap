@@ -1,67 +1,4 @@
 ---
-- name: install required packages
-  apt:
-    update_cache: yes
-    state: latest
-    pkg:
-      - hostapd
-      - dnsmasq
-      - netfilter-persistent
-      - iptables-persistent
-      - radvd
-      - freeradius
-  tags:
-    - apt
-
-- name: disable dhcpcd
-  systemd:
-    name: dhcpcd
-    state: stopped
-    enabled: no
-  tags:
-    - network
-
-- name: enable networkd
-  systemd:
-    name: systemd-networkd
-    state: started
-    enabled: yes
-  tags:
-    - network
-
-- name: disable resolved
-  systemd:
-    name: systemd-resolved
-    state: stopped
-    enabled: no
-  tags:
-    - network
-    - dnsmasq
-
-- name: ensure hostapd in not masked
-  systemd:
-    name: hostapd
-    masked: no
-    enabled: yes
-  tags:
-    - apt  
-
-- name: enable radvd
-  systemd:
-    name: radvd
-    state: started
-    enabled: yes
-  tags:
-    - apt
-
-- name: enable freeradius
-  systemd:
-    name: freeradius
-    state: started
-    enabled: yes
-  tags:
-    - apt
-
 - name: configure hostapd
   template:
     src: hostapd.conf.j2
@@ -101,8 +38,7 @@
   template:
     src: radvd.conf.j2
     dest: /etc/radvd.conf
-  notify:
-    - restart radvd
+  notify: restart radvd
   tags:
     - radvd
 
@@ -126,6 +62,17 @@
   template:
     src: radius/users.j2
     dest: /etc/freeradius/3.0/mods-config/files/authorize
+  notify: restart freeradius
+  tags:
+    - radius
+
+- name: copy test certificates
+  template:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+  with_items:
+    - { src: 'files/ca.pem', dest: '/etc/freeradius/3.0/certs/ca.pem' }
+    - { src: 'files/server.pem', dest: '/etc/freeradius/3.0/certs/server.pem' }
   notify: restart freeradius
   tags:
     - radius
@@ -157,7 +104,7 @@
 - name: configure web page
   template:
     src: hotspot/hotspotlogin.php.j2
-    dest: /var/www/hotspot/hostspotlogin.php
+    dest: /var/www/hotspot/hotspotlogin.php
   tags:
     - hotspot
 

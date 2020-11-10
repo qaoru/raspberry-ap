@@ -10,7 +10,7 @@
           - nginx
           - php-fpm
           - daemon
-          - xz-utils"
+          - xz-utils
           - hostapd
           - dnsmasq
           - netfilter-persistent
@@ -40,6 +40,8 @@
         name: hostapd
         masked: no
         enabled: yes 
+      tags:
+        - hostapd
 
     - name: enable radvd
       systemd:
@@ -67,4 +69,4 @@
         remote_src: yes
 
     - name: rename folder
-      command: mv /var/www/hotspot-login-master /var/www/hostpot
+      command: mv /var/www/hotspot-login-master /var/www/hotspot
