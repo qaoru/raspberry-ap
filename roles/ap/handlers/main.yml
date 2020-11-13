@@ -26,9 +26,6 @@
     name: nginx
     state: restarted
 
-- name: restart chilli
-  command: /etc/init.d/chilli restart
-
 - name: restart network
   service:
     name: systemd-networkd

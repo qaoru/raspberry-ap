@@ -1,0 +1,63 @@
+---
+- name: ensure fcgiwrap is installed
+  apt:
+    name: fcgiwrap
+    state: present
+
+- name: copy demo ssl certificate
+  copy:
+    src: key.pem
+    dest: /etc/nginx/key.pem
+
+- name: remove nginx default website
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+  tags:
+    - hotspot
+
+- name: configure nginx for captive portal
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/pepper.conf
+  tags:
+    - hotspot
+
+- name: enable pepper page on nginx
+  file:
+    src: ../sites-available/pepper.conf
+    dest: /etc/nginx/sites-enabled/pepper.conf
+    state: link
+  notify: restart nginx
+  tags:
+    - hotspot
+
+- name: disable chilli page on nginx
+  file:
+    path: /etc/nginx/sites-enabled/chilli.conf
+    state: absent
+  notify: restart nginx
+  tags:
+    - hotspot
+
+- name: configure web page
+  template:
+    src: hotspotlogin.cgi.j2
+    dest: /var/www/pepper/hotspotlogin.cgi
+  tags:
+    - hotspot
+
+- name: configure pepper
+  template:
+    src: pepper.j2
+    dest: /etc/pepper.conf
+  notify: restart pepper
+  tags:
+    - hotspot
+
+- name: start pepperspot
+  systemd:
+    name: pepperspot
+    enabled: yes
+    state: started

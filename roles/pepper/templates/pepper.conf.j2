@@ -1,0 +1,17 @@
+{% set ip4 = wifi_cwp_ipaddr | ansible.netcommon.ipaddr('address') %}
+{% set ip6 = wifi_cwp_ra.router | ansible.netcommon.ipv6('address') %}
+
+ipversion dual
+net {{ wifi_cwp_ipaddr | ansible.netcommon.ipaddr('network/prefix') }}
+staticipv6 {{ ip6 }}
+ipv6prefix {{ wifi_cwp_ra.router | ansible.netcommon.ipv6('network/prefix') }}
+dns1 {{ wifi_cwp_dns[0] }} 
+dns2 {{ wifi_cwp_dns[1] }}
+radiusserver1 ::1
+radiusserver2 127.0.0.1
+radiussecret {{ radius_password }}
+radiusnasid nas01
+dhcpif {{ wifi_cwp_iface }}
+uamserver https://{{ ip4 }}/cgi-bin/hotspotlogin.cgi
+uamserver6 https://[{{ ip6 }}]/cgi-bin/hotspotlogin.cgi
+uamsecret {{ uam_secret }}

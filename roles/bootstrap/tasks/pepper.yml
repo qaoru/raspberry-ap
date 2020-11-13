@@ -1,0 +1,22 @@
+---
+- name: fetch pepperspot sources
+  unarchive:
+    src: https://master.dl.sourceforge.net/project/pepperspot/pepperspot-0.4.tar.bz2
+    dest: /tmp
+    remote_src: yes
+
+- name: configure, compile and install pepperspot
+  command: '{{ item }}'
+  args:
+    chdir: /tmp/pepperspot-0.4/
+    creates: /usr/local/sbin/pepper
+  with_items:
+    - ./configure
+    - make
+    - make install
+
+- name: create pepperspot service
+  copy:
+    src: pepperspot.service
+    dest: /etc/systemd/system/pepperspot.service
+    mode: '0644'

@@ -1,0 +1,10 @@
+[Unit]
+Description=Pepperspot
+After=hostapd.service
+ 
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/pepper
+ 
+[Install]
+WantedBy=multi-user.target

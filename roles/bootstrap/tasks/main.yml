@@ -7,6 +7,7 @@
   apt:
     name:
       - xz-utils
+      - gtar
       - python-pymysql
       - dnsmasq
       - radvd
@@ -43,23 +44,8 @@
     name: freeradius
     enabled: yes
 
-- name: install coova-chilli 
-  apt:
-    deb: https://github.com/rahveiz/coova-chilli/releases/download/1.5_armv7l/coova-chilli_1.4_armhf.deb
-
-- name: enable coova-chilli
-  systemd:
-    name: chilli
-    enabled: yes
-
-- name: fetch hotspot-login pages
-  unarchive:
-    src: https://github.com/rahveiz/hotspot-login/archive/master.zip
-    dest: /var/www
-    remote_src: yes
-
-- name: rename hotspot-login to hotspot
-  command: mv /var/www/hotspot-login-master /var/www/hotspot
+- name: install coovachilli
+  include_tasks: chilli.yml
 
 - name: disable dhcpcd
   systemd:

@@ -2,7 +2,9 @@ bootstrap_opts:
   chilli: true
   pepper: true
   daloradius: true
-  
+
+use_pepper: false
+
 
 lan_iface: eth0
 lan_ipaddr: 192.168.1.245/24

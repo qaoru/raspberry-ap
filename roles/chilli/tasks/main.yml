@@ -1,0 +1,55 @@
+---
+- name: remove nginx default website
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+  tags:
+    - hotspot
+
+- name: configure nginx for captive portal
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/chilli.conf
+  tags:
+    - hotspot
+
+- name: enable chilli page on nginx
+  file:
+    src: ../sites-available/chilli.conf
+    dest: /etc/nginx/sites-enabled/chilli.conf
+    state: link
+  notify: restart nginx
+  tags:
+    - hotspot
+
+- name: disable pepper page on nginx
+  file:
+    path: /etc/nginx/sites-enabled/pepper.conf
+    state: absent
+  notify: restart nginx
+  tags:
+    - hotspot
+
+- name: configure web page
+  template:
+    src: hotspotlogin.php.j2
+    dest: /var/www/chilli/hotspotlogin.php
+  tags:
+    - hotspot
+
+- name: ensure chilli is started
+  lineinfile:
+    path: /etc/default/chilli
+    regexp: '^START_CHILLI='
+    line: START_CHILLI=1
+  tags:
+    - hotspot
+
+- name: configure chilli
+  template:
+    src: chilli.j2
+    dest: /etc/chilli/config
+  notify: restart chilli
+  tags:
+    - hotspot
