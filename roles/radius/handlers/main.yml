@@ -1,0 +1,4 @@
+- name: restart freeradius
+  systemd:
+    name: freeradius
+    state: restarted

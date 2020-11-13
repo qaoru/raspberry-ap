@@ -23,7 +23,7 @@ iface {{ wifi_eap_iface }} inet static
     network   {{ wifi_eap_ipaddr | ansible.netcommon.ipaddr('network') }}
     netmask   {{ wifi_eap_ipaddr | ansible.netcommon.ipaddr('netmask') }}
     broadcast {{ wifi_eap_ipaddr | ansible.netcommon.ipaddr('broadcast') }}
-    {% if wlan_mac_override %}
+    {% if wlan_mac_override|d(False) %}
     pre-up ip link set dev {{ wifi_eap_iface }} address {{ wlan_mac_override }}
     {% endif %}
 

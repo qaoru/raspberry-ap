@@ -1,5 +1,11 @@
+bootstrap_opts:
+  chilli: true
+  pepper: true
+  daloradius: true
+  
+
 lan_iface: eth0
-lan_ipaddr: 192.168.1.246/24
+lan_ipaddr: 192.168.1.245/24
 lan_gateway: 192.168.1.1
 gateway_as_dns: true
 nameservers: [1.1.1.1, 8.8.8.8]
@@ -28,6 +34,12 @@ wifi_cwp_dns:
   - 208.67.222.222
   - 208.67.220.220
 
+wifi_cwp_ra:
+  router: fd10:beef::cafe/64
+  dns:
+    - 2001:4860:4860::8888
+    - 2001:4860:4860::8844
+
 uam_secret: c5e9be43f916a5f0
 
 radius_password: testing123
@@ -38,4 +50,5 @@ radius_users:
   - name: foo
     password: bar
 
-
+mysql_radius_db: radius
+mysql_root_password: plop1234

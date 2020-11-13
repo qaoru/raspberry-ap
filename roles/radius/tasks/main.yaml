@@ -1,0 +1,70 @@
+---
+- name: configure freeradius
+  template:
+    src: freeradius/default.j2
+    dest: /etc/freeradius/3.0/sites-available/iot
+  notify: restart freeradius
+  tags:
+    - radius
+
+- name: configure freeradius inner-tunnel
+  template:
+    src: freeradius/inner-tunnel.j2
+    dest: /etc/freeradius/3.0/sites-available/iot-inner-tunnel
+  notify: restart freeradius
+  tags:
+    - radius
+
+- name: enable freeradius configurations
+  file:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    state: link
+  with_items:
+    - { src: '../sites-available/iot', dest: '/etc/freeradius/3.0/sites-enabled/iot' }
+    - { src: '../sites-available/iot-inner-tunnel', dest: '/etc/freeradius/3.0/sites-enabled/iot-inner-tunnel' }
+  tags:
+    - radius
+  
+- name: disable freeradius default configurations
+  file:
+    path: '{{ item }}'
+    state: absent
+  with_items:
+    - /etc/freeradius/3.0/sites-enabled/default
+    - /etc/freeradius/3.0/sites-enabled/inner-tunnel
+  tags:
+    - radius
+
+- name: copy test certificates
+  template:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+  with_items:
+    - { src: 'files/ca.pem', dest: '/etc/freeradius/3.0/certs/ca.pem' }
+    - { src: 'files/server.pem', dest: '/etc/freeradius/3.0/certs/server.pem' }
+  notify: restart freeradius
+  tags:
+    - radius
+
+- name: configure freeradius eap
+  template:
+    src: freeradius/eap.j2
+    dest: /etc/freeradius/3.0/mods-available/eap
+  notify: restart freeradius
+  tags:
+    - radius
+
+- name: configure freeradius sql
+  template:
+    src: freeradius/sql.j2
+    dest: /etc/freeradius/3.0/mods-available/sql
+  notify: restart freeradius
+  tags:
+    - radius
+
+- name: enable freeradius sql mod
+  file:
+    src: ../mods-available/sql
+    dest: /etc/freeradius/3.0/mods-enabled/sql
+    state: link

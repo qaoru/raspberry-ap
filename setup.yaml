@@ -2,4 +2,5 @@
   remote_user: pi
   become: true
   roles:
+  - radius
   - ap

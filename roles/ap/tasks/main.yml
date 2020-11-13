@@ -149,3 +149,15 @@
     - save iptables
   tags:
     - nat
+
+  - name: enable ip forwarding
+      sysctl:
+        name: '{{ item.key }}'
+        value: '{{ item.value }}'
+        sysctl_set: yes
+        state: present
+      with_items:
+        - { key: net.ipv4.ip_forward, value: 1 }
+        - { key: net.ipv6.forwarding.conf.all, value: 1 }
+  tags:
+    - nat

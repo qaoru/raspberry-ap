@@ -1,0 +1,158 @@
+---
+- name: update apt repositories
+  apt:
+    update_cache: yes
+
+- name: install required packages
+  apt:
+    name:
+      - xz-utils
+      - python-pymysql
+      - dnsmasq
+      - radvd
+      - hostapd
+      - freeradius
+      - freeradius-utils
+      - freeradius-mysql
+      - mariadb-server
+      - nginx
+      - php-fpm
+      - daemon
+      - netfilter-persistent
+      - iptables-persistent
+    state: present
+
+- name: ensure hostapd in not masked
+  systemd:
+    name: hostapd
+    masked: no
+    enabled: yes 
+
+- name: enable dnsmasq
+  systemd:
+    name: dnsmasq
+    enabled: yes
+
+- name: enable radvd
+  systemd:
+    name: radvd
+    enabled: yes
+
+- name: enable freeradius
+  systemd:
+    name: freeradius
+    enabled: yes
+
+- name: install coova-chilli 
+  apt:
+    deb: https://github.com/rahveiz/coova-chilli/releases/download/1.5_armv7l/coova-chilli_1.4_armhf.deb
+
+- name: enable coova-chilli
+  systemd:
+    name: chilli
+    enabled: yes
+
+- name: fetch hotspot-login pages
+  unarchive:
+    src: https://github.com/rahveiz/hotspot-login/archive/master.zip
+    dest: /var/www
+    remote_src: yes
+
+- name: rename hotspot-login to hotspot
+  command: mv /var/www/hotspot-login-master /var/www/hotspot
+
+- name: disable dhcpcd
+  systemd:
+    name: dhcpcd
+    state: stopped
+    enabled: no
+
+- name: enable networkd
+  systemd:
+    name: systemd-networkd
+    enabled: yes
+
+- name: disable resolved
+  systemd:
+    name: systemd-resolved
+    state: stopped
+    enabled: no
+
+- name: set root user password
+  # If .my.cnf already exists, this will cause an mysql-root-password update.
+  community.mysql.mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: root
+    password: "{{ mysql_root_password}}"
+    check_implicit_admin: true
+  tags:
+    - sql
+
+- name: create .my.cnf
+  template:
+    src: "client.my.cnf.j2"
+    dest: "/root/.my.cnf"
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - sql
+
+- name: removes all anonymous user accounts
+  community.mysql.mysql_user:
+    name: ''
+    host_all: yes
+    state: absent
+  tags:
+    - sql
+
+- name: Secures the MySQL root user for IPV6 localhost (::1)
+  community.mysql.mysql_user:
+    user: root
+    password: "{{ mysql_root_password }}"
+    host: "::1"
+  tags:
+    - sql
+
+- name: Secures the MySQL root user for IPV4 localhost (127.0.0.1)
+  community.mysql.mysql_user:
+    user: root
+    password: "{{ mysql_root_password }}"
+    host: "127.0.0.1"
+  tags:
+    - sql
+
+- name: Secures the MySQL root user for localhost domain (localhost)
+  community.mysql.mysql_user:
+    user: root
+    password: "{{ mysql_root_password }}"
+    host: "localhost"
+  tags:
+    - sql
+
+- name: Removes the MySQL test database
+  community.mysql.mysql_db:
+    db: test
+    state: absent
+  tags:
+      - sql
+
+- name: create freeradius database
+  community.mysql.mysql_db:
+    name: '{{ mysql_radius_db }}'
+    state: present
+  tags:
+    - sql
+    - radius
+
+- name: initialize freeradius schema
+  shell: 'mysql -u root -p{{ mysql_root_password }} {{ mysql_radius_db }} < /etc/freeradius/3.0/mods-config/sql/main/mysql/schema.sql'
+  tags:
+    - sql
+    - radius
+
+- name: initialize freeradius user
+  shell: 'mysql -u root -p{{ mysql_root_password }} {{ mysql_radius_db }} < /etc/freeradius/3.0/mods-config/sql/main/mysql/setup.sql'
+  tags:
+    - sql
+    - radius

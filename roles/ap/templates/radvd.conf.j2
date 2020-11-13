@@ -6,7 +6,20 @@ interface {{ wifi_eap_iface }} {
 	prefix {{ wifi_eap_ra.router | ansible.netcommon.ipv6('network/prefix') }} {
 		AdvRouterAddr on;
 	};
-	{% for ns in wifi_eap_ra.dns %}
+{% for ns in wifi_eap_ra.dns %}
 	RDNSS {{ ns }} { };
-	{% endfor %}
+{% endfor %}
 };
+
+{% if wifi_cwp_ra|d(False) %}
+interface {{ wifi_cwp_iface }} {
+
+	AdvSendAdvert on;
+	prefix {{ wifi_cwp_ra.router | ansible.netcommon.ipv6('network/prefix') }} {
+		AdvRouterAddr on;
+	};
+{% for ns in wifi_cwp_ra.dns %}
+	RDNSS {{ ns }} { };
+{% endfor %}
+};
+{% endif %}
