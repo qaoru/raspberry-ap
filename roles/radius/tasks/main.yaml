@@ -1,7 +1,7 @@
 ---
 - name: configure freeradius
   template:
-    src: freeradius/default.j2
+    src: freeradius/iot.j2
     dest: /etc/freeradius/3.0/sites-available/iot
   notify: restart freeradius
   tags:
@@ -9,7 +9,7 @@
 
 - name: configure freeradius inner-tunnel
   template:
-    src: freeradius/inner-tunnel.j2
+    src: freeradius/iot-inner-tunnel.j2
     dest: /etc/freeradius/3.0/sites-available/iot-inner-tunnel
   notify: restart freeradius
   tags:

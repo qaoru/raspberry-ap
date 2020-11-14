@@ -1,3 +1,4 @@
+{{ ansible_managed | comment }}
 {% set ip4 = wifi_cwp_ipaddr | ansible.netcommon.ipaddr('address') %}
 {% set ip6 = wifi_cwp_ra.router | ansible.netcommon.ipv6('address') %}
 

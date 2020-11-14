@@ -31,18 +31,17 @@
   tags:
     - hotspot
 
+- name: ensure /var/www/chilli is present
+  file:
+    path: /var/www/chilli
+    state: directory
+  tags:
+    - hotspot
+
 - name: configure web page
   template:
     src: hotspotlogin.php.j2
     dest: /var/www/chilli/hotspotlogin.php
-  tags:
-    - hotspot
-
-- name: ensure chilli is started
-  lineinfile:
-    path: /etc/default/chilli
-    regexp: '^START_CHILLI='
-    line: START_CHILLI=1
   tags:
     - hotspot
 
@@ -51,5 +50,29 @@
     src: chilli.j2
     dest: /etc/chilli/config
   notify: restart chilli
+  tags:
+    - hotspot
+
+- name: check if pepperspot is present
+  stat: 
+    path: /usr/local/sbin/pepper
+  register: pepper_status
+  tags:
+    - hotspot
+
+- name: disable pepper
+  systemd:
+    name: pepperspot
+    state: stopped
+    enabled: no
+  when: pepper_status.stat.exists
+  tags:
+    - hotspot
+
+- name: enable chilli
+  systemd:
+    name: chilli
+    state: started
+    enabled: yes
   tags:
     - hotspot

@@ -2,17 +2,35 @@
 - name: install coova-chilli 
   apt:
     deb: https://github.com/rahveiz/coova-chilli/releases/download/1.5_armv7l/coova-chilli_1.4_armhf.deb
+  tags:
+    - chilli
 
 - name: enable coova-chilli
   systemd:
     name: chilli
     enabled: yes
+  tags:
+    - chilli
+
+- name: authorize chilli to start
+  lineinfile:
+    path: /etc/default/chilli
+    regexp: '^START_CHILLI='
+    line: START_CHILLI=1
+  tags:
+    - chilli
 
 - name: fetch hotspot-login pages
   unarchive:
     src: https://github.com/rahveiz/hotspot-login/archive/master.zip
     dest: /var/www
     remote_src: yes
+  creates: /var/www/chilli
+  tags:
+    - chilli
 
 - name: rename hotspot-login to hotspot
   command: mv /var/www/hotspot-login-master /var/www/chilli
+  tags:
+    - chilli
+  creates: /var/www/chilli

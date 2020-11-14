@@ -44,25 +44,33 @@
     name: freeradius
     enabled: yes
 
-- name: install coovachilli
-  include_tasks: chilli.yml
-
+- name: setup lan interface manually as backup
+  template:
+    src: interfaces.j2
+    dest: /etc/network/interfaces
+  
 - name: disable dhcpcd
   systemd:
     name: dhcpcd
     state: stopped
     enabled: no
+  tags:
+    - system
 
 - name: enable networkd
   systemd:
     name: systemd-networkd
     enabled: yes
+  tags:
+    - system
 
 - name: disable resolved
   systemd:
     name: systemd-resolved
     state: stopped
     enabled: no
+  tags:
+    - system
 
 - name: set root user password
   # If .my.cnf already exists, this will cause an mysql-root-password update.
@@ -142,3 +150,17 @@
   tags:
     - sql
     - radius
+
+- name: install coovachilli
+  include_tasks: chilli.yml
+  when: bootstrap_opts.chilli|bool
+  tags:
+    - chilli
+    - hotspot
+
+- name: install pepperspot
+  include_tasks: pepper.yml
+  when: bootstrap_opts.pepper
+  tags:
+    - pepper
+    - hotspot

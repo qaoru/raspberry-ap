@@ -7,7 +7,7 @@ sql {
 	port = 3306
 	login = "radius"
 	password = "radpass"
-	radius_db = "radius"
+	radius_db = "{{ mysql_radius_db }}"
 	acct_table1 = "radacct"
 	acct_table2 = "radacct"
 	postauth_table = "radpostauth"

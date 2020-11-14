@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+
+auto lo
+iface lo inet loopback
+auto {{ lan_iface }}
+allow-hotplug {{ lan_iface }}
+iface {{ lan_iface }} inet static
+    address   {{ lan_ipaddr  }}
+    gateway {{ lan_gateway }}
+    dns-nameservers {% for item in nameservers %} {{ item }}{% endfor %}

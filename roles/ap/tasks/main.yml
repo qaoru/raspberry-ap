@@ -15,9 +15,6 @@
   with_items:
     - { src: 'templates/networkd/lan.network.j2', dest: '/etc/systemd/network/lan.network' }
     - { src: 'templates/networkd/eap.network.j2', dest: '/etc/systemd/network/eap.network' }
-    - { src: 'templates/networkd/cwp_bridge.network.j2', dest: '/etc/systemd/network/cwp_bridge.network' }
-    - { src: 'templates/networkd/cwp_bridge.netdev.j2', dest: '/etc/systemd/network/cwp_bridge.netdev' }
-    - { src: 'templates/networkd/cwp_bind.network.j2', dest: '/etc/systemd/network/cwp_bind.network' }
   tags:
     - network
 
@@ -44,49 +41,6 @@
   tags:
     - radvd
 
-- name: configure freeradius
-  template:
-    src: radius/default.j2
-    dest: /etc/freeradius/3.0/sites-available/default
-  notify: restart freeradius
-  tags:
-    - radius
-
-- name: configure freeradius inner-tunnel
-  template:
-    src: radius/inner-tunnel.j2
-    dest: /etc/freeradius/3.0/sites-available/inner-tunnel
-  notify: restart freeradius
-  tags:
-    - radius
-
-- name: configure freeradius users
-  template:
-    src: radius/users.j2
-    dest: /etc/freeradius/3.0/mods-config/files/authorize
-  notify: restart freeradius
-  tags:
-    - radius
-
-- name: copy test certificates
-  template:
-    src: '{{ item.src }}'
-    dest: '{{ item.dest }}'
-  with_items:
-    - { src: 'files/ca.pem', dest: '/etc/freeradius/3.0/certs/ca.pem' }
-    - { src: 'files/server.pem', dest: '/etc/freeradius/3.0/certs/server.pem' }
-  notify: restart freeradius
-  tags:
-    - radius
-
-- name: configure freeradius eap
-  template:
-    src: radius/eap.j2
-    dest: /etc/freeradius/3.0/mods-available/eap
-  notify: restart freeradius
-  tags:
-    - radius
-
 - name: enable NAT for IPv4
   iptables:
     ip_version: ipv4
@@ -111,14 +65,14 @@
   tags:
     - nat
 
-  - name: enable ip forwarding
-      sysctl:
-        name: '{{ item.key }}'
-        value: '{{ item.value }}'
-        sysctl_set: yes
-        state: present
-      with_items:
-        - { key: net.ipv4.ip_forward, value: 1 }
-        - { key: net.ipv6.forwarding.conf.all, value: 1 }
+- name: enable ip forwarding
+  sysctl:
+    name: '{{ item.key }}'
+    value: '{{ item.value }}'
+    sysctl_set: yes
+    state: present
+  with_items:
+    - { key: net.ipv4.ip_forward, value: 1 }
+    - { key: net.ipv6.conf.all.forwarding, value: 1 }
   tags:
     - nat

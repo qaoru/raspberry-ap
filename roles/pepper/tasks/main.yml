@@ -41,6 +41,13 @@
   tags:
     - hotspot
 
+- name: ensure /var/www/pepper is present
+  file:
+    path: /var/www/pepper
+    state: directory
+  tags:
+    - hotspot
+
 - name: configure web page
   template:
     src: hotspotlogin.cgi.j2
@@ -50,13 +57,29 @@
 
 - name: configure pepper
   template:
-    src: pepper.j2
+    src: pepper.conf.j2
     dest: /etc/pepper.conf
   notify: restart pepper
   tags:
     - hotspot
 
-- name: start pepperspot
+- name: check if chilli is present
+  stat:
+    path: /usr/sbin/chilli
+  register: chilli_status
+  tags:
+    - hotspot
+
+- name: disable chilli
+  systemd:
+    name: chilli
+    state: stopped
+    enabled: no
+  when: chilli_status.stat.exists
+  tags:
+    - hotspot
+
+- name: enable pepperspot
   systemd:
     name: pepperspot
     enabled: yes

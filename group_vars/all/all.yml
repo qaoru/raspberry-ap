@@ -3,7 +3,7 @@ bootstrap_opts:
   pepper: true
   daloradius: true
 
-use_pepper: false
+use_pepper: no
 
 
 lan_iface: eth0
