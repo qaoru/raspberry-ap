@@ -2,3 +2,8 @@
   systemd:
     name: freeradius
     state: restarted
+
+- name: restart nginx
+  systemd:
+    name: nginx
+    state: restarted

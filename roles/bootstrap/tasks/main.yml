@@ -18,6 +18,9 @@
       - mariadb-server
       - nginx
       - php-fpm
+      - php-pear
+      - php-db
+      - php7.3-mysql
       - daemon
       - netfilter-persistent
       - iptables-persistent
@@ -160,7 +163,13 @@
 
 - name: install pepperspot
   include_tasks: pepper.yml
-  when: bootstrap_opts.pepper
+  when: bootstrap_opts.pepper|bool
   tags:
     - pepper
     - hotspot
+
+- name: install daloradius
+  include_tasks: daloradius.yml
+  when: bootstrap_opts.daloradius|bool
+  tags:
+    - daloradius

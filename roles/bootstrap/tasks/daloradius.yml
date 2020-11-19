@@ -1,0 +1,24 @@
+---
+- name: fetch daloradius sources
+  unarchive:
+    src: https://github.com/lirantal/daloradius/archive/master.zip
+    dest: /tmp
+    remote_src: yes
+  tags:
+    - daloradius
+  
+- name: move sources to web folder
+  command: mv /tmp/daloradius-master /var/www/daloradius
+  # creates: /var/www/daloradius
+  tags:
+    - daloradius
+
+- name: import daloradius-freeradius tables to mysql
+  shell: 'mysql -u root -p{{ mysql_root_password }} {{ mysql_radius_db }} < /var/www/daloradius/contrib/db/fr2-mysql-daloradius-and-freeradius.sql'
+  tags:
+    - daloradius
+
+- name: import daloradius tables to mysql
+  shell: 'mysql -u root -p{{ mysql_root_password }} {{ mysql_radius_db }} < /var/www/daloradius/contrib/db/mysql-daloradius.sql'
+  tags:
+    - daloradius

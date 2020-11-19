@@ -68,3 +68,45 @@
     src: ../mods-available/sql
     dest: /etc/freeradius/3.0/mods-enabled/sql
     state: link
+
+
+- name: ensure pear DB package is present
+  community.general.pear:
+    name: DB
+    state: present
+
+- name: configure daloradius
+  template: 
+    src: daloradius/daloradius.conf.php.j2
+    dest: /var/www/daloradius/library/daloradius.conf.php
+  notify: restart nginx
+  when: bootstrap_opts.daloradius|bool
+  tags:
+    - daloradius
+
+- name: configure nginx for daloradius
+  template:
+    src: daloradius/nginx.conf.j2
+    dest: /etc/nginx/sites-available/daloradius.conf
+  notify: restart nginx
+  tags:
+    - daloradius
+
+- name: upload demo certificates
+  copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+  with_items:
+    - { src: 'files/nginx/nginx.crt', dest: '/etc/nginx/nginx.crt' }
+    - { src: 'files/nginx/nginx.key', dest: '/etc/nginx/nginx.key' }
+  tags:
+    - daloradius
+
+- name: enable daloradius pages on nginx
+  file:
+    src: ../sites-available/daloradius.conf
+    dest: /etc/nginx/sites-enabled/daloradius.conf
+    state: link
+  notify: restart nginx
+  tags:
+    - daloradius
