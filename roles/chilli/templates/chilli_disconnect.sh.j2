@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [[ $2 == "AP-STA-DISCONNECTED" ]] && [[ $1 == "{{ wifi_cwp_iface }}" ]]
+then
+  chilli_query logout $(echo $3 | awk '{ gsub(/:/,"-",$1); print toupper($1)}')
+fi

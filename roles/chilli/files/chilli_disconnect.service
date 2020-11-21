@@ -1,0 +1,13 @@
+[Unit]
+Description=Chilli disconnect handler
+After=hostapd.service
+ 
+[Service]
+Type=simple
+Environment=PATH=/usr/sbin:/usr/bin:/bin
+ExecStart=/usr/sbin/hostapd_cli -a '/chilli_disconnect.sh'
+Restart=on-failure
+TimeoutStopSec=300
+ 
+[Install]
+WantedBy=multi-user.target

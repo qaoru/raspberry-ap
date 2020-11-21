@@ -1,0 +1,7 @@
+{{ ansible_managed | comment }}
+
+[Match]
+Name={{ wifi_eap_iface }}
+
+[Network]
+Bridge={{ eap_iface }}

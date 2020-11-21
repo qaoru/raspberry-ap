@@ -14,8 +14,10 @@ nameservers: [1.1.1.1, 8.8.8.8]
 
 # Required for muliple SSIDs
 wlan_mac_override: 06:25:9c:94:4b:20
+wlan_iface: wlan1
 
-wifi_eap_iface: wlan1
+eap_iface: br_eap
+wifi_eap_iface: wlan1_1
 wifi_eap_ipaddr: 10.20.30.254/24
 wifi_eap_ssid: IoTEAPNetworkTest
 wifi_eap_dhcp:
@@ -29,7 +31,7 @@ wifi_eap_ra:
     - 2001:4860:4860::8888
     - 2001:4860:4860::8844
 
-wifi_cwp_iface: wlan1_1
+wifi_cwp_iface: wlan1
 wifi_cwp_ipaddr: 192.168.3.254/24
 wifi_cwp_ssid: IoTGuestNetworkTest
 wifi_cwp_dns:

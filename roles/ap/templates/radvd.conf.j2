@@ -1,6 +1,6 @@
 {{ ansible_managed | comment }}
 
-interface {{ wifi_eap_iface }} {
+interface {{ eap_iface }} {
 
 	AdvSendAdvert on;
 	prefix {{ wifi_eap_ra.router | ansible.netcommon.ipv6('network/prefix') }} {

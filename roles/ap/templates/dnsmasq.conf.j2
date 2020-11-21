@@ -14,15 +14,15 @@ server={{ ns }}
 
 
 # EAP
-interface={{ wifi_eap_iface }}
-dhcp-range=set:{{ wifi_eap_iface }},{{ wifi_eap_dhcp.start }},{{ wifi_eap_dhcp.end }},{{ wifi_eap_ipaddr | ansible.netcommon.ipaddr('netmask') }},{{ wifi_eap_dhcp.lease_time }}
+interface={{ eap_iface }}
+dhcp-range=set:{{ eap_iface }},{{ wifi_eap_dhcp.start }},{{ wifi_eap_dhcp.end }},{{ wifi_eap_ipaddr | ansible.netcommon.ipaddr('netmask') }},{{ wifi_eap_dhcp.lease_time }}
 
 {% set gw = wifi_eap_ipaddr | ansible.netcommon.ipaddr('address') %}
 # gateway addr
-dhcp-option={{ wifi_eap_iface }},3,{{ gw }}
+dhcp-option={{ eap_iface }},3,{{ gw }}
 
 # DNS
-dhcp-option={{ wifi_eap_iface }},6,{{ gw }},{{ nameservers | join(',') }}
+dhcp-option={{ eap_iface }},6,{{ gw }},{{ nameservers | join(',') }}
 
 # DNS for IPv6
-dhcp-option={{ wifi_eap_iface }},option6:dns-server{% for ns in wifi_eap_ra.dns %},[{{ ns }}]{% endfor %}
+dhcp-option={{ eap_iface }},option6:dns-server{% for ns in wifi_eap_ra.dns %},[{{ ns }}]{% endfor %}

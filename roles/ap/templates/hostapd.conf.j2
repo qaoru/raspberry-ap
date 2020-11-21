@@ -1,6 +1,6 @@
 {{ ansible_managed | comment }}
 
-interface={{ wifi_eap_iface }}
+interface={{ wlan_iface }}
 driver=nl80211
 ctrl_interface=/var/run/hostapd
 ctrl_interface_group=0
@@ -11,7 +11,13 @@ country_code=FR       # the country code
 ieee80211n=1          # 802.11n support
 wmm_enabled=1         # QoS support
 
+# -------- guest --------
+ssid={{ wifi_cwp_ssid }}
+beacon_int=100
+auth_algs=1
+
 # -------- main --------
+bss={{ wifi_eap_iface }}
 ssid={{ wifi_eap_ssid }}
 ieee8021x=1
 wpa=2
@@ -30,9 +36,3 @@ acct_server_addr=127.0.0.1
 acct_server_port=1813
 acct_server_shared_secret=testing123
 radius_acct_interim_interval=600
-
-# -------- guest --------
-bss={{ wifi_cwp_iface }}
-ssid={{ wifi_cwp_ssid }}
-beacon_int=100
-auth_algs=1

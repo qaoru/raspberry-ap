@@ -15,6 +15,9 @@
   with_items:
     - { src: 'templates/networkd/lan.network.j2', dest: '/etc/systemd/network/lan.network' }
     - { src: 'templates/networkd/eap.network.j2', dest: '/etc/systemd/network/eap.network' }
+    - { src: 'templates/networkd/override.network.j2', dest: '/etc/systemd/network/override.network' }
+    - { src: 'templates/networkd/br_eap.netdev.j2', dest: '/etc/systemd/network/br_eap.netdev' }
+    - { src: 'templates/networkd/bind.network.j2', dest: '/etc/systemd/network/bind.network' }
   tags:
     - network
 

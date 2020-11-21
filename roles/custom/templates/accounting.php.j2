@@ -77,7 +77,7 @@ $active_sessions = $bdd->query('select acctsessionid,username,acctstarttime,call
                 }
                 echo "<td><ul>";
                 foreach($neigh_table[$entry['callingstationid']] as $ip) {
-                    echo "<li>{$ip}</li>";
+                    echo "<li><a href=\"http://{{ lan_ipaddr | ansible.netcommon.ipaddr('address') }}:3000/lua/host_details.lua?host={$ip}\"`>{$ip}</a></li>";
                 }
                 echo "</ul></td>";
                 echo "</tr>";

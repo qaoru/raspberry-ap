@@ -76,3 +76,27 @@
     enabled: yes
   tags:
     - hotspot
+
+- name: configure disconnect handler
+  template:
+    src: chilli_disconnect.sh.j2
+    dest: /chilli_disconnect.sh
+    mode: '0755'
+  tags:
+    - hotspot
+
+- name: create disconnect handler service
+  copy:
+    src: chilli_disconnect.service
+    dest: /etc/systemd/system/chilli_disconnect.service
+    mode: '0700'
+  tags:
+    - hotspot
+
+- name: enable disconnect handler
+  systemd:
+    name: chilli_disconnect
+    state: started
+    enabled: yes
+  tags:
+    - hotspot
