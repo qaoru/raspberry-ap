@@ -21,10 +21,15 @@ rsn_pairwise=CCMP
 beacon_int=100
 auth_algs=3
 
+nas_identifier=nas01
 auth_server_addr=127.0.0.1
 auth_server_port=1812
 auth_server_shared_secret=testing123
 
+acct_server_addr=127.0.0.1
+acct_server_port=1813
+acct_server_shared_secret=testing123
+radius_acct_interim_interval=600
 
 # -------- guest --------
 bss={{ wifi_cwp_iface }}

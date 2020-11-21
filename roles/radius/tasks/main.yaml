@@ -69,6 +69,12 @@
     dest: /etc/freeradius/3.0/mods-enabled/sql
     state: link
 
+- name: grant all permissions on radius user for the radius db
+  community.mysql.mysql_user:
+    name: radius
+    state: present
+    append_privs: yes
+    priv: 'radius.*:ALL'
 
 - name: ensure pear DB package is present
   community.general.pear:

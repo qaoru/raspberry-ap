@@ -25,7 +25,6 @@
     src: https://github.com/rahveiz/hotspot-login/archive/master.zip
     dest: /var/www
     remote_src: yes
-  creates: /var/www/chilli
   tags:
     - chilli
 
@@ -33,4 +32,3 @@
   command: mv /var/www/hotspot-login-master /var/www/chilli
   tags:
     - chilli
-  creates: /var/www/chilli

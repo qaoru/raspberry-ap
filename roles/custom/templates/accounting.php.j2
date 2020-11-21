@@ -1,0 +1,90 @@
+<?php
+$DB_HOST                = '127.0.0.1';
+$DB_NAME                = 'radius';
+$DB_USER                = 'radius';
+$DB_PWD                 = 'radpass';
+try {
+    $bdd = new PDO("mysql:host=$DB_HOST;dbname=$DB_NAME", $DB_USER, $DB_PWD);
+}
+catch(Exception $e) {
+    die('Erreur : '.$e->getMessage());
+}
+$out = [];
+exec("ip neigh | awk '{ gsub(/:/,\"-\",$5); print $1, toupper($5); }'", $out);
+$neigh_table = [];
+foreach($out as $entry) {
+    $tmp = explode(' ', $entry);
+    if(strncmp($tmp[0], "fe80", 4) == 0) {
+        continue;
+    }
+    if (empty($neigh_table[$tmp[1]])) {
+        $neigh_table[$tmp[1]] = [$tmp[0]];
+    } else {
+        $neigh_table[$tmp[1]][] = $tmp[0];
+    }
+}
+
+$active_sessions = $bdd->query('select acctsessionid,username,acctstarttime,callingstationid from radacct where acctterminatecause = ""');
+?>
+<html>
+<style>
+.pure-g {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+@media (min-width: 768px) {
+  .pure-g {
+    width: 750px;
+  }
+}
+@media (min-width: 992px) {
+  .pure-g {
+    width: 970px;
+  }
+}
+@media (min-width: 1200px) {
+  .pure-g {
+    width: 1170px;
+  }
+}
+.center {
+    text-align: center;
+}
+</style>
+    <head>
+        <title>Accounting Page</title>
+        <link rel="stylesheet" href="pure-min.css">
+    </html>
+    <body class="center">
+        <div class="pure-g pure-u-3-5 center">
+        <h1>Logged in users</h1>
+        <table class="pure-table">
+            <thead>
+                <th>Session ID</th>
+                <th>Username</th>
+                <th>Since</th>
+                <th>MAC Address</th>
+                <th>IP Addresses</th>
+            </thead>
+            <tbody>
+            <?php
+            while($entry = $active_sessions->fetch(PDO::FETCH_ASSOC)) {
+                echo "<tr>";
+                foreach($entry as $val) {
+                    echo "<td>{$val}</td>";
+                }
+                echo "<td><ul>";
+                foreach($neigh_table[$entry['callingstationid']] as $ip) {
+                    echo "<li>{$ip}</li>";
+                }
+                echo "</ul></td>";
+                echo "</tr>";
+            }
+            ?>
+            </tbody>
+        </table>
+        </div>
+    </body>
+</head>

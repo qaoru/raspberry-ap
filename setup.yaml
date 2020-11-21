@@ -18,3 +18,9 @@
       when: use_pepper|bool
       tags:
         - hotspot
+    
+    - name: configure monitoring
+      include_role:
+        name: custom
+      tags:
+        - custom

@@ -27,8 +27,14 @@ server iot-inner-tunnel {
         }
         eap
     }
+    accounting {
+        detail
+        radutmp
+        sql
+    }
     session {
         radutmp
+        sql
     }
     post-auth {
         -sql

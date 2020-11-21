@@ -57,12 +57,14 @@ server iot {
     }
     accounting {
         detail
+        radutmp
         unix
         sql
         exec
         attr_filter.accounting_response
     }
     session {
+        sql
     }
     post-auth {
         update {

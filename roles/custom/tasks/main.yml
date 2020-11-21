@@ -1,0 +1,21 @@
+- name: ensure directory is present
+  file:
+    path: /var/www/monitoring
+    state: directory
+  tags:
+    - custom
+
+- name: setup nginx webpage
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/conf.d/monit.conf
+  tags:
+    - custom
+
+- name: configure accounting page
+  template:
+    src: accounting.php.j2
+    dest: /var/www/monitoring/accounting.php
+  notify: restart nginx
+  tags:
+    - custom
