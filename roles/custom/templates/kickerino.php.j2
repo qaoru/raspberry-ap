@@ -1,0 +1,10 @@
+<?php
+$mac = $_POST["usermac"];
+$out = "";
+$cmd = "sudo chilli_query logout " . $mac;
+echo $cmd;
+exec($cmd, $out);
+print_r($output);  // to see the response to your command
+
+header("Location: http://{{ lan_ipaddr | ansible.netcommon.ipaddr('address') }}:8000/accounting.php");
+exit();

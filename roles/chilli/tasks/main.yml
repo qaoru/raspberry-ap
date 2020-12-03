@@ -23,13 +23,6 @@
   tags:
     - hotspot
 
-- name: disable pepper page on nginx
-  file:
-    path: /etc/nginx/sites-enabled/pepper.conf
-    state: absent
-  notify: restart nginx
-  tags:
-    - hotspot
 
 - name: ensure /var/www/chilli is present
   file:
@@ -50,22 +43,6 @@
     src: chilli.j2
     dest: /etc/chilli/config
   notify: restart chilli
-  tags:
-    - hotspot
-
-- name: check if pepperspot is present
-  stat: 
-    path: /usr/local/sbin/pepper
-  register: pepper_status
-  tags:
-    - hotspot
-
-- name: disable pepper
-  systemd:
-    name: pepperspot
-    state: stopped
-    enabled: no
-  when: pepper_status.stat.exists
   tags:
     - hotspot
 

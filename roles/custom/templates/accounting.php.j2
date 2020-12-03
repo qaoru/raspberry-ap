@@ -24,7 +24,7 @@ foreach($out as $entry) {
     }
 }
 
-$active_sessions = $bdd->query('select acctsessionid,username,acctstarttime,callingstationid from radacct where acctterminatecause = ""');
+$active_sessions = $bdd->query('select acctsessionid,username,acctstarttime,callingstationid, framedipaddress from radacct where acctterminatecause = ""');
 ?>
 <html>
 <style>
@@ -67,19 +67,35 @@ $active_sessions = $bdd->query('select acctsessionid,username,acctstarttime,call
                 <th>Since</th>
                 <th>MAC Address</th>
                 <th>IP Addresses</th>
+                <th>Action</th>
             </thead>
             <tbody>
             <?php
             while($entry = $active_sessions->fetch(PDO::FETCH_ASSOC)) {
+                $user = $entry['callingstationid'];
+                $cwp = !empty($entry['framedipaddress']);
+                unset($entry['framedipaddress']);
                 echo "<tr>";
                 foreach($entry as $val) {
                     echo "<td>{$val}</td>";
                 }
+                
                 echo "<td><ul>";
                 foreach($neigh_table[$entry['callingstationid']] as $ip) {
                     echo "<li><a href=\"http://{{ lan_ipaddr | ansible.netcommon.ipaddr('address') }}:3000/lua/host_details.lua?host={$ip}\"`>{$ip}</a></li>";
                 }
                 echo "</ul></td>";
+
+                echo "<td>";
+                if ($cwp) {
+                    echo "
+                    <form action=\"kickerino.php\" method=\"POST\">
+                        <input type=\"hidden\" name=\"usermac\" value=\"{$user}\"/>
+                        <button type=\"submit\">CWP Kick</button>
+                    </form>
+                    ";
+                }
+                echo "</td>";
                 echo "</tr>";
             }
             ?>
@@ -88,3 +104,4 @@ $active_sessions = $bdd->query('select acctsessionid,username,acctstarttime,call
         </div>
     </body>
 </head>
+

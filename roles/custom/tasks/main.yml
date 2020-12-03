@@ -19,3 +19,11 @@
   notify: restart nginx
   tags:
     - custom
+
+- name: configure kick page
+  template:
+    src: kickerino.php.j2
+    dest: /var/www/monitoring/kickerino.php
+  notify: restart nginx
+  tags:
+    - custom

@@ -8,14 +8,6 @@
     - name: setup chillispot
       include_role:
         name: chilli
-      when: not use_pepper|bool
-      tags:
-        - hotspot
-
-    - name: setup pepperspot
-      include_role:
-        name: pepper
-      when: use_pepper|bool
       tags:
         - hotspot
     

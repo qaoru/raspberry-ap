@@ -1,10 +1,6 @@
 bootstrap_opts:
   chilli: true
-  pepper: true
   daloradius: true
-
-use_pepper: no
-
 
 lan_iface: eth0
 lan_ipaddr: 192.168.1.245/24
@@ -37,12 +33,6 @@ wifi_cwp_ssid: IoTGuestNetworkTest
 wifi_cwp_dns:
   - 208.67.222.222
   - 208.67.220.220
-
-# wifi_cwp_ra:
-#   router: fd10:beef::cafe/64
-#   dns:
-#     - 2001:4860:4860::8888
-#     - 2001:4860:4860::8844
 
 uam_secret: c5e9be43f916a5f0
 
