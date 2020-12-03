@@ -76,13 +76,18 @@ $active_sessions = $bdd->query('select acctsessionid,username,acctstarttime,call
                 $cwp = !empty($entry['framedipaddress']);
                 unset($entry['framedipaddress']);
                 echo "<tr>";
-                foreach($entry as $val) {
-                    echo "<td>{$val}</td>";
+                foreach($entry as $key => $val) {
+                    if ($key == "callingstationid") {
+                        $arg = str_replace("-", ":", $val);
+                        echo "<td><a href=\"http://{{ lan_ipaddr | ansible.netcommon.ipaddr('address') }}:3000/lua/mac_details.lua?host={$arg}\">${val}</a></td>";
+                    } else {
+                        echo "<td>{$val}</td>";
+                    }
                 }
                 
                 echo "<td><ul>";
                 foreach($neigh_table[$entry['callingstationid']] as $ip) {
-                    echo "<li><a href=\"http://{{ lan_ipaddr | ansible.netcommon.ipaddr('address') }}:3000/lua/host_details.lua?host={$ip}\"`>{$ip}</a></li>";
+                    echo "<li><a href=\"http://{{ lan_ipaddr | ansible.netcommon.ipaddr('address') }}:3000/lua/host_details.lua?host={$ip}\">{$ip}</a></li>";
                 }
                 echo "</ul></td>";
 
